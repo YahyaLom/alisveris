@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2f5bff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Listem">
+<title>Alışveriş Listem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0f1115);--card:light-dark(#f3f4f6,#191c22);--ink:light-dark(#111318,#f2f3f5);--mut:light-dark(#5d6470,#9aa1ad);--line:light-dark(#e3e5e9,#2a2e36);--acc:#2f5bff;--ok:light-dark(#0f7a45,#3fd18a);--okbg:light-dark(#e3f6ec,#12301f);--bad:#d6303a}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:1240px;margin:0 auto;padding:clamp(18px,3vw,40px) max(4vw,14px) 80px}
+h1,h2{font-family:Archivo,Inter,sans-serif;font-stretch:112%;font-weight:800;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(32px,6vw,52px)}h2{font-size:clamp(26px,4.5vw,40px)}
+.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;justify-content:space-between;margin-bottom:20px}
+.stats{color:var(--mut);font-size:15px;margin-top:6px}.stats b{color:var(--ink)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 22px}
+input,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--card);border:1.5px solid transparent;border-radius:12px;padding:11px 14px;min-height:46px;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--acc)}
+.search{flex:1 1 240px}
+button,.btn{font:600 15px Inter,sans-serif;min-height:46px;padding:0 18px;border-radius:12px;border:0;cursor:pointer;background:var(--card);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;white-space:nowrap}
+button:disabled{opacity:.5}
+button:focus-visible,.tile:focus-visible,.pc:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.pri{background:var(--acc);color:#fff}.ghost{background:transparent;border:1.5px solid var(--line)}.danger{color:var(--bad)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr))}
+.tile{position:relative;display:block;text-decoration:none;border-radius:20px;overflow:hidden;background:var(--card);aspect-ratio:4/5;cursor:pointer;color:inherit}
+.mos{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px}
+.mos.n1{grid-template-columns:1fr;grid-template-rows:1fr}.mos.n2{grid-template-rows:1fr}
+.mos img{width:100%;height:100%;object-fit:cover;display:block;background:#fff}
+.lab{position:absolute;left:0;right:0;bottom:0;padding:40px 16px 14px;background:linear-gradient(transparent,rgba(0,0,0,.72));color:#fff}
+.lab b{display:block;font:800 24px/1.05 Archivo,sans-serif;font-stretch:112%}.lab span{font-size:14px;opacity:.9}
+.tile.add{display:grid;place-items:center;border:2px dashed var(--line);background:transparent;color:var(--mut);font-weight:600;aspect-ratio:auto;min-height:120px}
+.ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--mut)}
+.pgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(46%,210px),1fr))}
+.pc{display:block;text-decoration:none;cursor:pointer;color:inherit}
+.im{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden;background:#fff;border:1px solid var(--line)}
+.im img{width:100%;height:100%;object-fit:contain}
+.nm{font-weight:600;margin:8px 2px 0;line-height:1.3}.mt{color:var(--mut);font-size:13px;margin:2px 2px 0}
+.pc.done .im img{opacity:.45;filter:grayscale(.6)}
+.tag{position:absolute;top:10px;left:10px;background:var(--ok);color:#fff;font:600 13px Inter;padding:4px 10px;border-radius:99px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 20px}
+.chip{min-height:40px;border-radius:99px;padding:0 16px;font-size:14px}.chip.on{background:var(--ink);color:var(--bg)}
+.back{background:none;padding:0;min-height:40px;color:var(--mut);margin-bottom:6px}
+.detail{display:grid;gap:clamp(18px,4vw,48px);grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}
+.big{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;aspect-ratio:1;display:grid;place-items:center}
+.big img{width:100%;height:100%;object-fit:contain}
+.price{font:800 28px Archivo,sans-serif;font-stretch:112%;margin:10px 0 0}
+.note{color:var(--mut);margin:10px 0 0;white-space:pre-wrap}
+.stores{display:grid;gap:8px;margin:18px 0}
+.store{display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:56px;border-radius:14px;background:var(--card);text-decoration:none;font-weight:600;color:inherit}
+.store .dot{width:12px;height:12px;border-radius:50%;flex:none}.store .go{margin-left:auto;color:var(--mut);font-weight:500;font-size:14px}
+.mark{width:100%;min-height:58px;font-size:17px;border-radius:16px}.mark.is{background:var(--okbg);color:var(--ok)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.empty{padding:48px 20px;text-align:center;color:var(--mut);border:2px dashed var(--line);border-radius:20px}
+.empty svg{width:120px;height:auto;margin-bottom:10px}
+.status{font-size:14px;color:var(--mut);margin:0 0 14px}
+.who{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:14px;margin-bottom:14px}
+.who button{min-height:36px;padding:0 12px;font-size:14px}
+.login{max-width:420px;margin:12vh auto 0;display:grid;gap:14px}
+.login p{color:var(--mut);margin:0}.err{color:var(--bad);font-size:14px;min-height:20px}
+.dlg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:end;justify-content:center;z-index:9}
+.dlg.open{display:flex}
+.sheet{background:var(--bg);width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:22px 18px 28px}
+@media(min-width:620px){.dlg{align-items:center}.sheet{border-radius:22px}}
+.sheet h3{font:800 24px Archivo,sans-serif;font-stretch:112%;margin:0 0 14px}
+.fld{display:block;margin:0 0 14px}.fld>span{display:block;font-size:14px;font-weight:600;margin:0 0 6px}
+.lk{display:flex;gap:8px;margin-bottom:8px}.lk button{flex:none;min-width:46px;padding:0}
+.prev{width:96px;height:96px;border-radius:14px;object-fit:contain;background:#fff;border:1px solid var(--line);display:block;margin-bottom:8px}
+.hint{font-size:13px;color:var(--mut)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:10;display:none}
+@media(max-width:700px){.detail{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><p class="status">Yükleniyor…</p></div>
+<div class="dlg" id="dlg"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+{
+const SB='https://jjhvqooyajkrthzhnilw.supabase.co/rest/v1/';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqaHZxb295YWprcnRoemhuaWx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4OTM5NDksImV4cCI6MjA4MjQ2OTk0OX0.MCf_WuKOAr8DlFk6OLRrwC1A2zNuITS3BTXf4HUtd2M';
+const H={apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'};
+async function api(path,opt={}){const r=await fetch(SB+path,{...opt,headers:{...H,...(opt.headers||{})}});if(!r.ok){const t=await r.text();const e=new Error(t);e.status=r.status;throw e}return r.status===204?null:r.json().catch(()=>null)}
+const STORES=[['trendyol','Trendyol','#f27a1a'],['hepsiburada','Hepsiburada','#ff6000'],['superstep','SuperStep','#e4002b'],['beymen','Beymen','#1a1a1a'],['boyner','Boyner','#000'],['amazon','Amazon','#ff9900'],['n11','n11','#7b2ff7'],['sneaksup','Sneaks Up','#d4002a'],['flo.com','FLO','#ff3c00'],['zara','Zara','#000'],['sephora','Sephora','#000'],['watsons','Watsons','#00a0af'],['nike','Nike','#111'],['intersport','Intersport','#e30613'],['fashfed','FashFed','#222'],['ozdilek','Özdilekteyim','#c8102e'],['instreet','Instreet','#222'],['rossmann','Rossmann','#c3002f'],['gratis','Gratis','#e5007d']];
+const $=s=>document.querySelector(s),app=$('#app'),dlg=$('#dlg'),sheet=$('#sheet');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl=u=>/^https?:\/\//i.test(u||'')?u:'';
+const tr=s=>(s||'').toLocaleLowerCase('tr').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ı/g,'i').replace(/ö/g,'o').replace(/ş/g,'s').replace(/ü/g,'u');
+const slug=s=>tr(s).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'kategori';
+const uname=s=>tr(s).trim().replace(/\s+/g,'.').replace(/[^a-z0-9._-]/g,'');
+const storeOf=u=>{let h='';try{h=new URL(u).hostname.replace(/^www\./,'')}catch(e){}const m=STORES.find(s=>h.includes(s[0]));return m?{n:m[1],c:m[2]}:{n:h||'Mağaza',c:'#8a8f98'}};
+const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
+let user=ls.get('wl_user'),P=[],C=[],filter='all',q='',loaded=false;
+const imgCache=new Map();
+const bag='<svg viewBox="0 0 120 110" aria-hidden="true"><path d="M20 34h80l-6 70H26z" fill="currentColor" opacity=".12"/><path d="M20 34h80l-6 70H26z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M42 44V28a18 18 0 0 1 36 0v16" fill="none" stroke="currentColor" stroke-width="3"/></svg>';
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',2600)}
+function imgTag(p,cls=''){if(!p.img_id)return'';if(p.img_id.startsWith('img/'))return`<img src="${esc(p.img_id)}" alt="${esc(p.name)}" loading="lazy" ${cls}>`;const d=imgCache.get(p.img_id);return`<img ${d?`src="${d}"`:''} data-db="${esc(p.img_id)}" alt="${esc(p.name)}" ${cls}>`}
+async function hydrate(){const need=[...new Set([...document.querySelectorAll('img[data-db]:not([src])')].map(i=>i.dataset.db))].filter(id=>!imgCache.has(id));
+  if(need.length){try{const rows=await api('wl_images?select=id,data&id=in.('+need.map(encodeURIComponent).join(',')+')');rows.forEach(r=>imgCache.set(r.id,r.data))}catch(e){}}
+  document.querySelectorAll('img[data-db]:not([src])').forEach(i=>{const d=imgCache.get(i.dataset.db);if(d)i.src=d})}
+function cur(){const h=location.hash.slice(1);if(h.startsWith('k-'))return{v:'cat',id:h.slice(2)};if(h.startsWith('u-'))return{v:'prod',id:h.slice(2)};return{v:'home'}}
+function catName(id){return(C.find(c=>c.id===id)||{}).name||id}
+function allCats(){const ids=new Set(C.map(c=>c.id));const extra=[...new Set(P.map(p=>p.cat))].filter(x=>x&&!ids.has(x)).map(id=>({id,name:id,ord:999}));return[...C,...extra].sort((a,b)=>(a.ord??0)-(b.ord??0)||a.name.localeCompare(b.name,'tr'))}
+function card(p){const n=(p.links||[]).length;return`<a class="pc ${p.bought?'done':''}" href="#u-${esc(p.id)}"><div class="im">${imgTag(p)}${p.bought?'<span class="tag">✓ Alındı</span>':''}</div><div class="nm">${esc(p.name)}</div><div class="mt">${p.price?esc(p.price)+' · ':''}${n} mağaza</div></a>`}
+const whoBar=()=>`<div class="who">@${esc(user)} <button class="ghost" id="acct">Hesap</button></div>`;
+
+function loginView(msg=''){return`<div class="login"><h1>Alışveriş Listem</h1><p>Kullanıcı adınla gir. Şifre yok; kullanıcı adın listenin anahtarı.</p>
+<form id="lf"><label class="fld"><span>Kullanıcı adı</span><input id="un" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="ör. ayse.liste" value="${esc(ls.get('wl_last')||'')}"></label>
+<div class="err" id="le">${esc(msg)}</div><div class="row"><button class="pri" type="submit" id="lin">Giriş yap</button><button class="ghost" type="button" id="new">Yeni liste aç</button></div></form>
+<p class="hint">3–30 karakter: harf, rakam, nokta, tire. Büyük/küçük harf fark etmez.</p></div>`}
+function home(){const todo=P.filter(p=>!p.bought).length,done=P.length-todo;
+  let h=whoBar()+`<div class="top"><div><h1>Alışveriş Listem</h1><div class="stats"><b>${todo}</b> alınacak · <b>${done}</b> alındı</div></div><button class="pri" id="addP">+ Ürün ekle</button></div>
+  <div class="bar"><input class="search" id="q" type="search" placeholder="Ürün ara…" value="${esc(q)}" aria-label="Ürün ara"></div>`;
+  if(q){const r=P.filter(p=>tr(p.name+' '+catName(p.cat)).includes(tr(q)));return h+(r.length?`<div class="pgrid">${r.map(card).join('')}</div>`:`<div class="empty">“${esc(q)}” için ürün yok.</div>`)}
+  const cats=allCats();if(!cats.length&&loaded)return h+`<div class="empty">${bag}<p>Liste henüz boş. “+ Ürün ekle” ile başla.</p></div>`;
+  return h+`<div class="grid">${cats.map(c=>{const ps=P.filter(p=>p.cat===c.id),im=ps.filter(p=>p.img_id&&!p.bought).concat(ps.filter(p=>p.img_id&&p.bought)).slice(0,4),b=ps.filter(p=>p.bought).length,k=im.length===3?2:im.length;
+    return`<a class="tile" href="#k-${esc(c.id)}">${im.length?`<div class="mos n${k}">${im.slice(0,k).map(p=>imgTag(p)).join('')}</div>`:`<div class="ph">${bag}</div>`}<div class="lab"><b>${esc(c.name)}</b><span>${ps.length} ürün${b?` · ${b} alındı`:''}</span></div></a>`}).join('')}<button class="tile add" id="addC">+ Kategori ekle</button></div>`}
+function catView(id){let ps=P.filter(p=>p.cat===id);const all=ps.length,b=ps.filter(p=>p.bought).length;
+  if(filter==='todo')ps=ps.filter(p=>!p.bought);if(filter==='done')ps=ps.filter(p=>p.bought);ps.sort((x,y)=>(x.bought-y.bought)||(y.created||0)-(x.created||0));
+  return whoBar()+`<button class="back" data-go="">← Kategoriler</button><div class="top"><div><h2>${esc(catName(id))}</h2><div class="stats">${all} ürün · ${b} alındı</div></div><button class="pri" id="addP">+ Ürün ekle</button></div>
+  <div class="chips">${[['all','Hepsi'],['todo','Alınacak'],['done','Alındı']].map(([k,l])=>`<button class="chip ${filter===k?'on':''}" data-f="${k}">${l}</button>`).join('')}<button class="chip ghost" id="editC">Kategoriyi düzenle</button></div>
+  ${ps.length?`<div class="pgrid">${ps.map(card).join('')}</div>`:`<div class="empty">${bag}<p>${all?'Bu filtrede ürün yok.':'Bu kategoride henüz ürün yok.'}</p></div>`}`}
+function prodView(id){const p=P.find(x=>x.id===id);if(!p)return loaded?`<button class="back" data-go="">← Kategoriler</button><div class="empty">Ürün bulunamadı.</div>`:'<p class="status">Yükleniyor…</p>';
+  const links=(p.links||[]).filter(l=>safeUrl(l.u));
+  return whoBar()+`<button class="back" data-go="k-${esc(p.cat)}">← ${esc(catName(p.cat))}</button>
+  <div class="detail"><div class="big">${p.img_id?imgTag(p):bag}</div><div><h2>${esc(p.name)}</h2>${p.price?`<div class="price">${esc(p.price)}</div>`:''}${p.note?`<p class="note">${esc(p.note)}</p>`:''}
+  <div class="stores">${links.length?links.map(l=>{const s=storeOf(l.u);return`<a class="store" href="${esc(l.u)}" target="_blank" rel="noopener"><span class="dot" style="background:${s.c}"></span>${esc(l.n||s.n)}<span class="go">Mağazaya git ↗</span></a>`}).join(''):'<p class="hint">Henüz mağaza linki yok.</p>'}</div>
+  <button class="mark ${p.bought?'is':'pri'}" id="tog">${p.bought?'✓ Alındı — geri almak için dokun':'Alındı olarak işaretle'}</button>
+  ${p.bought&&p.bought_at?`<p class="hint">${new Date(p.bought_at).toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'})} tarihinde alındı</p>`:''}
+  <div class="row"><button class="ghost" id="edit">Düzenle</button><button class="ghost danger" id="del">Sil</button></div></div></div>`}
+function render(){const was=document.activeElement&&document.activeElement.id==='q';
+  if(!user){app.innerHTML=loginView();return}
+  const r=cur();app.innerHTML=r.v==='cat'?catView(r.id):r.v==='prod'?prodView(r.id):home();
+  const qi=$('#q');if(qi&&was){qi.focus();qi.setSelectionRange(q.length,q.length)}hydrate()}
+
+async function load(){if(!user)return;try{const[u,ps,cs]=await Promise.all([api('wl_users?select=username&username=eq.'+encodeURIComponent(user)),api('wl_products?select=*&username=eq.'+encodeURIComponent(user)),api('wl_categories?select=*&username=eq.'+encodeURIComponent(user))]);
+  if(!u.length){ls.set('wl_user',null);user=null;app.innerHTML=loginView('Bu kullanıcı adı artık yok.');return}P=ps;C=cs;loaded=true;render()}catch(e){app.innerHTML=whoBar()+'<div class="empty">Liste yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.</div>'}}
+
+/* login */
+app.addEventListener('submit',async e=>{if(e.target.id!=='lf')return;e.preventDefault();await doLogin(false)});
+async function doLogin(create){const raw=$('#un').value,u=uname(raw),le=$('#le');
+  if(!/^[a-z0-9._-]{3,30}$/.test(u)){le.textContent='Kullanıcı adı 3–30 karakter olmalı (harf, rakam, nokta, tire).';return}
+  $('#lin').disabled=$('#new').disabled=true;le.textContent='';
+  try{const ex=await api('wl_users?select=username&username=eq.'+encodeURIComponent(u));
+    if(create){if(ex.length){le.textContent=`“${u}” alınmış. Başka bir ad dene ya da “Giriş yap”a bas.`;return}await api('wl_users',{method:'POST',body:JSON.stringify({username:u})})}
+    else if(!ex.length){le.textContent=`“${u}” diye bir liste yok. Yeni açmak için “Yeni liste aç”a bas.`;return}
+    user=u;ls.set('wl_user',u);ls.set('wl_last',u);location.hash='';await load()}
+  catch(err){le.textContent=err.status===409?'Bu kullanıcı adı alınmış.':'Bağlantı hatası, tekrar dene.'}
+  finally{const a=$('#lin'),b=$('#new');if(a)a.disabled=false;if(b)b.disabled=false}}
+
+/* events */
+app.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
+  if(t.id==='new')return doLogin(true);
+  if(t.dataset.go!==undefined){location.hash=t.dataset.go;return}
+  if(t.dataset.f){filter=t.dataset.f;render();return}
+  const r=cur();
+  if(t.id==='acct')return acctForm();
+  if(t.id==='addP')return form(null,r.v==='cat'?r.id:'');
+  if(t.id==='addC')return catForm();
+  if(t.id==='editC')return catForm(r.id);
+  const p=P.find(x=>x.id===r.id);
+  if(t.id==='tog'&&p){const nb=!p.bought,at=nb?new Date().toISOString():null,old=[p.bought,p.bought_at];p.bought=nb;p.bought_at=at;render();
+    api(`wl_products?username=eq.${encodeURIComponent(user)}&id=eq.${encodeURIComponent(p.id)}`,{method:'PATCH',body:JSON.stringify({bought:nb,bought_at:at})}).catch(()=>{[p.bought,p.bought_at]=old;render();toast('Kaydedilemedi, tekrar dene.')})}
+  if(t.id==='edit'&&p)form(p);
+  if(t.id==='del'&&p)ask(`“${p.name}” silinsin mi?`,'Evet, sil',async()=>{await api(`wl_products?username=eq.${encodeURIComponent(user)}&id=eq.${encodeURIComponent(p.id)}`,{method:'DELETE'});P=P.filter(x=>x!==p);location.hash='k-'+p.cat;render()})});
+app.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;render()}});
+dlg.addEventListener('click',e=>{if(e.target===dlg)close()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+window.addEventListener('hashchange',()=>{filter='all';render();scrollTo(0,0)});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user&&!dlg.classList.contains('open'))load()});
+function close(){dlg.classList.remove('open');sheet.innerHTML=''}
+function open(h){sheet.innerHTML=h;dlg.classList.add('open');const f=sheet.querySelector('input,select');f&&f.focus()}
+function ask(msg,yes,fn){open(`<h3>${esc(msg)}</h3><div class="row"><button class="pri" style="background:var(--bad)" id="y">${esc(yes)}</button><button class="ghost" id="n">Vazgeç</button></div>`);
+  $('#n').onclick=close;$('#y').onclick=async()=>{$('#y').disabled=true;try{await fn();close()}catch(e){toast('İşlem yapılamadı.');close()}}}
+
+function acctForm(){open(`<h3>Hesap</h3><p class="hint" style="margin:0 0 14px">Şu an <b>@${esc(user)}</b> olarak girdin. Şifre olmadığı için kullanıcı adını bilen herkes listeyi açabilir; tahmin edilmesi zor bir ad seç.</p>
+  <form id="rf"><label class="fld"><span>Yeni kullanıcı adı</span><input id="nu" autocapitalize="none" spellcheck="false" value="${esc(user)}"></label><div class="err" id="re"></div>
+  <div class="row"><button class="pri" type="submit">Adı değiştir</button><button class="ghost" type="button" id="lo">Çıkış yap</button><button class="ghost" type="button" id="cx">Kapat</button></div></form>`);
+  $('#cx').onclick=close;$('#lo').onclick=()=>{ls.set('wl_user',null);user=null;P=[];C=[];loaded=false;close();location.hash='';render()};
+  $('#rf').onsubmit=async e=>{e.preventDefault();const n=uname($('#nu').value),re=$('#re');if(n===user)return close();
+    if(!/^[a-z0-9._-]{3,30}$/.test(n)){re.textContent='3–30 karakter: harf, rakam, nokta, tire.';return}
+    try{const ex=await api('wl_users?select=username&username=eq.'+encodeURIComponent(n));if(ex.length){re.textContent=`“${n}” alınmış.`;return}
+      await api('wl_users?username=eq.'+encodeURIComponent(user),{method:'PATCH',body:JSON.stringify({username:n})});user=n;ls.set('wl_user',n);ls.set('wl_last',n);close();toast('Kullanıcı adın artık @'+n);load()}
+    catch(err){re.textContent=err.status===409?`“${n}” alınmış.`:'Değiştirilemedi, tekrar dene.'}}}
+
+function catForm(id){const c=id?allCats().find(x=>x.id===id):null;
+  open(`<h3>${c?'Kategoriyi düzenle':'Yeni kategori'}</h3><form id="cf"><label class="fld"><span>Kategori adı</span><input id="cn" required value="${esc(c?c.name:'')}" placeholder="Örn. Ayakkabı"></label>
+  <div class="row"><button class="pri" type="submit">Kaydet</button><button class="ghost" type="button" id="cx">Vazgeç</button>${c&&!P.some(p=>p.cat===id)?'<button class="ghost danger" type="button" id="cd">Sil</button>':''}</div></form>`);
+  $('#cx').onclick=close;const cd=$('#cd');if(cd)cd.onclick=async()=>{await api(`wl_categories?username=eq.${encodeURIComponent(user)}&id=eq.${encodeURIComponent(id)}`,{method:'DELETE'});C=C.filter(x=>x.id!==id);close();location.hash=''};
+  $('#cf').onsubmit=async e=>{e.preventDefault();const name=$('#cn').value.trim();if(!name)return;const row={username:user,id:c?c.id:slug(name),name,ord:c?.ord??C.length};
+    try{await saveCat(row);close();if(!c)location.hash='k-'+row.id;else render()}catch(err){toast('Kaydedilemedi.')}}}
+async function saveCat(row){await api('wl_categories',{method:'POST',headers:{Prefer:'resolution=merge-duplicates'},body:JSON.stringify(row)});C=C.filter(x=>x.id!==row.id).concat(row)}
+
+function shrink(file){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{const s=Math.min(1,700/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);res(cv.toDataURL('image/jpeg',.8))};im.onerror=rej;im.src=u})}
+function linkRow(l){return`<div class="lk"><input type="url" class="lu" placeholder="https://www.trendyol.com/…" value="${esc(l?.u||'')}" aria-label="Mağaza linki"><button type="button" class="ghost rm" aria-label="Linki kaldır">✕</button></div>`}
+function form(p,cat){const cats=allCats();let img=p?.img_id||'';
+  open(`<h3>${p?'Ürünü düzenle':'Yeni ürün'}</h3><form id="pf">
+  <label class="fld"><span>Fotoğraf</span><div id="pvw">${p?.img_id?imgTag(p,'class="prev"'):''}</div><input type="file" id="fi" accept="image/*"><span class="hint" id="fs"></span></label>
+  <label class="fld"><span>Ürün adı</span><input id="pn" required value="${esc(p?.name||'')}" placeholder="Örn. New Era 9Forty NY Siyah"></label>
+  <label class="fld"><span>Kategori</span><select id="pc">${cats.map(c=>`<option value="${esc(c.id)}" ${(p?.cat||cat)===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}<option value="__new">+ Yeni kategori…</option></select></label>
+  <label class="fld" id="ncw" hidden><span>Yeni kategori adı</span><input id="nc" placeholder="Örn. Şapka"></label>
+  <label class="fld"><span>Fiyat (isteğe bağlı)</span><input id="pp" value="${esc(p?.price||'')}" placeholder="Örn. 1.299 TL"></label>
+  <label class="fld"><span>Not (beden, renk…)</span><textarea id="pt" rows="2">${esc(p?.note||'')}</textarea></label>
+  <div class="fld"><span>Mağaza linkleri</span><div id="lks">${((p?.links||[]).length?p.links:[{},{}]).map(linkRow).join('')}</div><button type="button" class="ghost" id="al">+ Link ekle</button><p class="hint">Mağaza adı linkten otomatik bulunur.</p></div>
+  <div class="row"><button class="pri" type="submit" id="sv">Kaydet</button><button class="ghost" type="button" id="px">Vazgeç</button></div></form>`);
+  hydrate();const sel=$('#pc'),ncw=$('#ncw'),tg=()=>{ncw.hidden=sel.value!=='__new'};if(!cats.length)sel.value='__new';tg();sel.onchange=tg;
+  $('#px').onclick=close;$('#al').onclick=()=>$('#lks').insertAdjacentHTML('beforeend',linkRow());
+  $('#lks').onclick=e=>{const b=e.target.closest('.rm');if(b)b.parentElement.remove()};
+  $('#fi').onchange=async e=>{const f=e.target.files[0];if(!f)return;const fs=$('#fs');fs.textContent='Yükleniyor…';$('#sv').disabled=true;
+    try{const data=await shrink(f),id='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);await api('wl_images',{method:'POST',body:JSON.stringify({id,data})});imgCache.set(id,data);img=id;$('#pvw').innerHTML=`<img class="prev" src="${data}" alt="">`;fs.textContent='Fotoğraf yüklendi.'}
+    catch(err){fs.textContent='Fotoğraf yüklenemedi.'}$('#sv').disabled=false};
+  $('#pf').onsubmit=async e=>{e.preventDefault();const name=$('#pn').value.trim();if(!name)return;$('#sv').disabled=true;let c=sel.value;
+    try{if(c==='__new'){const n=$('#nc').value.trim()||'Diğer';c=slug(n);if(!allCats().some(x=>x.id===c))await saveCat({username:user,id:c,name:n,ord:C.length})}
+      const links=[...document.querySelectorAll('.lu')].map(i=>i.value.trim()).filter(safeUrl).map(u=>({u,n:storeOf(u).n}));
+      const row={username:user,id:p?.id||('p'+Date.now().toString(36)),cat:c,name,price:$('#pp').value.trim(),note:$('#pt').value.trim(),links,img_id:img||null,bought:p?.bought||false,bought_at:p?.bought_at||null,created:p?.created||Date.now()};
+      await api('wl_products',{method:'POST',headers:{Prefer:'resolution=merge-duplicates'},body:JSON.stringify(row)});
+      P=P.filter(x=>x.id!==row.id).concat(row);close();location.hash='u-'+row.id;render()}
+    catch(err){toast('Kaydedilemedi, tekrar dene.');$('#sv').disabled=false}}}
+
+render();load();
+}
+</script>
+</body>
+</html>
